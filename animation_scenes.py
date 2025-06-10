@@ -48,16 +48,16 @@ clear_wipe = am.Scene(
 clear_scene = am.Scene(
     "clear",
     (
-        am.Generator(
-            0, am.Generator.at_beat(0),
-            lambda g: noise(
-                canvas, 0, 40 * 24, ("##",), (Style.BRIGHT + Fore.WHITE,)
-            ),
-            am.Generator.no_request(), am.Generator.no_request()
-        ),
+        #am.Generator(
+        #    0, am.Generator.at_beat(0),
+        #    lambda g: noise(
+        #        canvas, 0, 40 * 24, ("##",), (Style.BRIGHT + Fore.WHITE,)
+        #    ),
+        #    am.Generator.no_request(), am.Generator.no_request()
+        #),
 
         am.Generator(
-            1, am.Generator.always(),
+            0, am.Generator.always(),
             lambda g: clear(canvas, 0),
             am.Generator.no_request(), am.Generator.no_request()
         ),
