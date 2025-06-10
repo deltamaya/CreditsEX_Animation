@@ -245,8 +245,8 @@ controller = am.SceneManager((*all_scenes, counter), (
         "text", data_strings["fundingx2_2"]
     )),
 
-    am.Event(3894, am.Event.swap_scene("clear")),
     am.Event(3895, am.Event.remove_scene("fundingx2")),
+    am.Event(3895, am.Event.swap_scene("clear")),
     am.Event(3896, am.Event.swap_scene("ocean_c")),
     *ocean2_events,
 
@@ -256,8 +256,8 @@ controller = am.SceneManager((*all_scenes, counter), (
         "fdg_single", 1, "text", data_strings["fdg_single_0"]
     )),
 
-    am.Event(5499, am.Event.swap_scene("clear")),
     am.Event(5500, am.Event.remove_scene("fdg_single")),
+    am.Event(5500, am.Event.swap_scene("clear")),
     am.Event(5500, am.Event.swap_scene("beats")),
     am.Event(5500, am.Event.layer_scene("fdg_down")),
     am.Event(5788, lambda c: c.set_generator_data(
