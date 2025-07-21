@@ -12,29 +12,8 @@ from string_defs import data_strings
 
 import animator as am
 
-enable_ansi()
-# canvas.render_blank()
-delay = 60.0 / 179.0 / 8.0
-beat = 0
-offset = 5.492
-# print((delay * 980) + offset)
-skip_by = 0
-
-debug = False
-last_frames = []
 
 
-def skip_beats(ctr, amount, next_debug):
-    global beat
-    global skip_by
-
-    ctr.cur_beat += amount
-    beat += amount
-
-    if debug:
-        controller.events[next_debug] = (am.Event(next_debug, am.Event.layer_scene("debug_counter")),)
-
-    skip_by = offset + (delay * amount)
 
 
 counter = am.Scene(
@@ -283,42 +262,54 @@ controller = am.SceneManager((*all_scenes, counter), (
 
 
 
-filename = "media/credits.wav"
+# canvas.render_blank()
+BPM = 179
+BEAT_PER_SEC=BPM/60
+SEC_PER_BEAT=60/BPM
+SEC_PER_TICK=SEC_PER_BEAT/8
 
-playback = Playback()
-playback.load_file(filename)
 
 
-if os.name == "nt":
-    os.system("cls")
-elif os.name == "posix":
-    os.system("clear")
-else:
-    print("\033[2J")
 
-# wave_obj = sa.WaveObject.from_wave_file(filename)
-# play_obj = wave_obj.play()
-playback.play()
-playback.seek(skip_by)
 
-time_start = time.time()
-prev_pos = 0
 
-while playback.active:
-    # (17.06.21) might have broken, i used a -1 beat offset here to try and sync up everything better
-    # since i originally used 1-indexed beats
-    #
-    # (24.06.21) update chat it didnt break
+def main():
+    tick = 0
 
-    # next_beat = (time.time() - time_start - offset) > ((beat - 1) * delay)
-    next_beat = (playback.curr_pos - offset) > ((beat - 1) * delay)
-    # print(pygame.mixer.music.get_pos())
+    debug = False
+    last_frames = []
+    enable_ansi()
+    filename = "media/credits.wav"
 
-    if next_beat:
-        controller.request_next()
-        canvas.render_all()
-        last_frames.append(time.time())
-        if len(last_frames) > 10:
-            last_frames.pop(0)
+    # playback = Playback()
+    # playback.load_file(filename)
 
-        beat += 1
+
+    if os.name == "nt":
+        os.system("cls")
+    elif os.name == "posix":
+        os.system("clear")
+    else:
+        print("\033[2J")
+
+
+    # playback.play()
+    # playback.seek(skip_by)
+
+    time_start = time.time()
+
+    while True:
+        next_tick = (time.time()-time_start) > (tick*SEC_PER_TICK)
+
+        if next_tick:
+            tick+=1
+            controller.request_next()
+            canvas.render_all()
+            last_frames.append(time.time())
+            if len(last_frames) > 10:
+                last_frames.pop(0)
+
+
+
+if __name__ =="__main__":
+    main()
