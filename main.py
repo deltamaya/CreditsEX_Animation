@@ -2,7 +2,6 @@ from animation_functions import debug_info
 from CLIRender.classes import enable_ansi
 from colorama import Fore, Style
 
-import keyboard
 import time
 import os
 import random
