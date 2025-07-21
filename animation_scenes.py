@@ -868,8 +868,20 @@ poweroff = am.Scene(
     )
 )
 
+test_scene=am.Scene(
+    "test_scene",
+    (
+        am.Generator(
+            0,am.Generator.always(),
+            am.Generator.no_create(),
+            lambda g,b: canvas.set_string(0,Vector2(2,0),"test",Fore.WHITE+Style.BRIGHT),
+            am.Generator.no_request()
+        ),
+    )
+)
+
 all_scenes = (
-    wipe, clear_wipe, clear_scene, ocean, ocean2, ocean3, text, title, beats, beats_lr, funding, date_ticker,
+    test_scene,wipe, clear_wipe, clear_scene, ocean, ocean2, ocean3, text, title, beats, beats_lr, funding, date_ticker,
     weather, redraw_ui, loading, quick_loading, error_screen, funding_double, access_points, funding_single,
     funding_down, poweroff
 )

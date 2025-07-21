@@ -1,19 +1,16 @@
 from animation_functions import debug_info
 from CLIRender.classes import enable_ansi
 from colorama import Fore, Style
-
 import time
 import os
 import random
 from just_playback import Playback
-
 from animation_scenes import all_scenes, canvas
 from string_defs import data_strings
-
 import animator as am
 
 
-
+last_frames = []
 
 
 counter = am.Scene(
@@ -150,7 +147,10 @@ ocean2_events = (
 
 controller = am.SceneManager((*all_scenes, counter), (
     am.Event(0, am.Event.swap_scene("wipe")),
-    # am.Event(1, am.Event.layer_scene("debug_counter")),
+    am.Event(10, am.Event.layer_scene("test_scene")),
+
+    am.Event(1, am.Event.layer_scene("debug_counter")),
+    
     am.Event(58, am.Event.swap_scene("clear")),
     am.Event(60, am.Event.swap_scene("ocean_b")),
     # am.Event(60, am.Event.layer_scene("typewrite")),
@@ -262,6 +262,7 @@ controller = am.SceneManager((*all_scenes, counter), (
 
 
 
+
 # canvas.render_blank()
 BPM = 179
 BEAT_PER_SEC=BPM/60
@@ -269,15 +270,10 @@ SEC_PER_BEAT=60/BPM
 SEC_PER_TICK=SEC_PER_BEAT/8
 
 
-
-
-
-
 def main():
     tick = 0
 
     debug = False
-    last_frames = []
     enable_ansi()
     filename = "media/credits.wav"
 
@@ -308,6 +304,8 @@ def main():
             last_frames.append(time.time())
             if len(last_frames) > 10:
                 last_frames.pop(0)
+        else:
+            time.sleep(0.01)
 
 
 
