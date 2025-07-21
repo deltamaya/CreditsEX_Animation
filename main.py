@@ -16,7 +16,7 @@ import animator as am
 enable_ansi()
 # canvas.render_blank()
 delay = 60.0 / 179.0 / 8.0
-beat = -60
+beat = 0
 offset = 5.492
 # print((delay * 980) + offset)
 skip_by = 0
@@ -283,61 +283,11 @@ controller = am.SceneManager((*all_scenes, counter), (
 ))
 
 
-# class MixerWrapper:
-#     def __init__(self):
-#         self.is_paused = False
-#
-#     def toggle_music(self):
-#         if self.is_paused:
-#             pygame.mixer.music.unpause()
-#             self.is_paused = False
-#         else:
-#             pygame.mixer.music.pause()
-#             self.is_paused = True
-#
-#
-# ffwing = MixerWrapper()
-
-paused_this_frame = False
-ff_this_frame = False
 
 filename = "media/credits.wav"
 
 playback = Playback()
 playback.load_file(filename)
-
-print("\033[1;1Hskips\n\n1 | start\n2 | title\n3 | funding\n4 | loading\n5 | break\n6 | final")
-
-# Skips forward to the title scene
-time_menu = time.time()
-while time.time() - 2 < time_menu:
-    if keyboard.is_pressed("1"):
-        time_menu = 99999999999999999999
-        break
-    elif keyboard.is_pressed("2"):
-        skip_beats(controller, 1000, 1081)
-        time_menu = 99999999999999999999
-        break
-    elif keyboard.is_pressed("3"):
-        skip_beats(controller, 1770, 1851)
-        controller.events[1849] = am.Event(1849, am.Event.layer_scene("redraw_ui")),
-        controller.events[1860] = am.Event(1860, am.Event.remove_scene("redraw_ui")),
-        time_menu = 99999999999999999999
-        break
-    elif keyboard.is_pressed("4"):
-        skip_beats(controller, 3040, 3133)
-        time_menu = 99999999999999999999
-        break
-    elif keyboard.is_pressed("5"):
-        skip_beats(controller, 3780, 3898)
-        time_menu = 99999999999999999999
-        break
-    elif keyboard.is_pressed("6"):
-        skip_beats(controller, 5420, 5501)
-        time_menu = 99999999999999999999
-        break
-
-    time.sleep(0.01)
 
 
 if os.name == "nt":
@@ -353,7 +303,6 @@ playback.play()
 playback.seek(skip_by)
 
 time_start = time.time()
-last_update = time.time()
 prev_pos = 0
 
 while playback.active:
@@ -364,7 +313,6 @@ while playback.active:
 
     # next_beat = (time.time() - time_start - offset) > ((beat - 1) * delay)
     next_beat = (playback.curr_pos - offset) > ((beat - 1) * delay)
-    need_update = time.time() - (1/30) > last_update
     # print(pygame.mixer.music.get_pos())
 
     if next_beat:
@@ -375,41 +323,3 @@ while playback.active:
             last_frames.pop(0)
 
         beat += 1
-
-    if need_update:
-        if keyboard.is_pressed("p"):
-            if not paused_this_frame:
-                if playback.paused:
-                    playback.resume()
-                else:
-                    playback.pause()
-
-                paused_this_frame = True
-        else:
-            paused_this_frame = False
-
-        if keyboard.is_pressed(","):
-            if not ff_this_frame:
-                ff_this_frame = True
-            else:
-                playback.seek(playback.curr_pos + delay * 3)
-
-        if keyboard.is_pressed("."):
-            if not ff_this_frame:
-                ff_this_frame = True
-            else:
-                playback.seek(playback.curr_pos + delay * 7)
-
-        if keyboard.is_pressed("/"):
-            if not ff_this_frame:
-                ff_this_frame = True
-            else:
-                playback.seek(playback.curr_pos + delay * 15)
-        # else:
-        #     # print("n", ff_this_frame, pygame.mixer.music.get_pos() + prev_pos, prev_pos)
-        #     if ff_this_frame:
-        #         # print("unpausing now")
-        #         ff_this_frame = False
-        #         ffwing.toggle_music()
-
-        last_update = time.time()
