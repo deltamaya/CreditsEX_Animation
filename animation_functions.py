@@ -4,7 +4,6 @@ import random
 from CLIRender.dat import Vector2
 from colorama import Fore, Style
 
-
 def generate_random_hex(length):
     return ('%0' + str(length) + 'x') % random.randrange(16 ** length)
 
@@ -184,16 +183,49 @@ def clear(c, layer):
     c.clear_layer(layer)
 
 
-def beat_toggle(c, g, layer, x, x2, y, y2, char, col):
+disc_string="""
+        AABB
+    AAAAAABBBBBB
+  AAAAAAAABBBBBBBB
+  AAAAAAOOOOBBBBBB
+AAAAAAOOOOOOOOBBBBBB
+CCCCCCOOOOOOOODDDDDD
+  CCCCCCOOOODDDDDD
+  CCCCCCCCDDDDDDDD
+    CCCCCCDDDDDD
+        CCDD
+"""
+
+def get_disc_string(tl,tr, bl, br,center):
+    disc=disc_string
+
+    disc=disc.replace('A',tl);
+    disc=disc.replace('B',tr);
+    disc=disc.replace('C',bl);
+    disc=disc.replace('D',br);
+    disc=disc.replace('O',center);
+    return disc
+
+
+def beat_toggle_disc(c, g, layer, tlbr,trbl,center,  col):
     tog = g.get_data("beat_toggle")
-    chars = char if tog else ".."
-    x_diff = x2 - x
-    for yn in range(y, y2):
-        c.set_string(
-            layer, Vector2(x, yn), chars * x_diff, col
-        ),
+    chars = center if tog else "_"
+    set_multiline_string(
+        c, layer, 15,6, get_disc_string(tlbr,trbl,trbl,tlbr,chars), col
+    ),
 
     g.set_data("beat_toggle", not tog)
+
+# def beat_toggle(c, g, layer, x, x2, y, y2, char, col):
+#     tog = g.get_data("beat_toggle")
+#     chars = char if tog else ".."
+#     x_diff = x2 - x
+#     for yn in range(y, y2):
+#         c.set_string(
+#             layer, Vector2(x, yn), chars * x_diff, col
+#         ),
+
+#     g.set_data("beat_toggle", not tog)
 
 
 def work_out_date(b, day_offset=0):
@@ -221,7 +253,7 @@ def work_out_date(b, day_offset=0):
                 month_loc = 0
                 year += 1
 
-    return "{:02}.{:02}.{:04}".format(day_loc, month_loc + 1, year)
+    return "{:04}/{:02}/{:02}.".format(year, month_loc + 1, day_loc)
 
 
 def split_word_template(string):
@@ -331,14 +363,14 @@ def show_access_point_visual(c, generator, layer, x, y):
     if counter < 8:
         set_multiline_string(
             c, layer, location_x, location_y,
-            "  ###  \nPBS #{:02}\nPing  {}".format(block_counter + 1, counter + 1), Fore.YELLOW + Style.NORMAL
+            "  ###  \nPBS #{:02}\nPing{}".format(block_counter + 1, '.'*(counter//2)), Fore.YELLOW + Style.NORMAL
         )
 
         generator.oper_data("counter", lambda t: t + 1)
     else:
         set_multiline_string(
             c, layer, location_x, location_y,
-            "  ...  \nPBS #{:02}\n-------".format(block_counter + 1), Fore.BLACK + Style.BRIGHT
+            "  ...  \nPBS #{:02}\nTIMEOUT".format(block_counter + 1), Fore.BLACK + Style.BRIGHT
         )
 
         location_x_next = 5 * ((block_counter + 1) % 6) + x
@@ -346,7 +378,7 @@ def show_access_point_visual(c, generator, layer, x, y):
 
         set_multiline_string(
             c, layer, location_x_next, location_y_next,
-            "  ###  \nPBS #{:02}\nPing  {}".format(block_counter + 2, 1), Fore.YELLOW + Style.NORMAL
+            "  ###  \nPBS #{:02}\nPing".format(block_counter + 2), Fore.YELLOW + Style.NORMAL
         )
 
         generator.set_data("counter", 1)

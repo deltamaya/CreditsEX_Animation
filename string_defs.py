@@ -5,14 +5,14 @@ from animation_functions import split_word_template, fuck_up_text, work_out_date
 
 data_strings = {}
 
-data_strings["ocean_b_0"] = (
+data_strings["radio_b_0"] = (
     "Now for the official national~ weather~ service~ forecast\n"
     "~~~~for~~ Eastern Massachusetts~ inside of~~ I-~~~~4~~~~9~~~~~~~5~~,\n"
     "~~~~~~~~    including Boston,\n\n"
     "~~~~~~~~issued at 7~~~~:2~~1~~~~ PM~~~~, ~~~~~~~~~~~~~~Thursday, October~~ 2~~2~~nd."
 )
 
-data_strings["ocean_b_1"] = (
+data_strings["radio_b_1"] = (
     "Tonight:\n\n~~~~~Mostly cloudy with isolated~ showers~ until~~ mid~~~~night,\n"
     "~~~~~~~~~then mostly clear~~ after~~ mid~night.\n"
     "~~~~~~~~~Lows in the lower 4~~~~0~~~~s.\n"
@@ -21,7 +21,7 @@ data_strings["ocean_b_1"] = (
     "~~~~~~~~~~Chance of rain:~~~~ 2~~0~~~~ per~cent."
 )
 
-data_strings["ocean_b_2"] = (
+data_strings["radio_b_2"] = (
     "Friday:\n\n~~Sunny.\n~~~~~~~~~~~~~~~~Lush colour with highs in the low~er 5~~~0~s.\n"
     "~~~~~~~~~~Northwest~~ winds~~ 10~~-~1~~5~~ miles~~ an~~ hour\n"
     "~~~~with gusts up to~~ 2~~~~5~~~~ miles~~ an~~ hour~~.\n"
@@ -30,7 +30,7 @@ data_strings["ocean_b_2"] = (
     "~~~~~~~~~~~~~~~~North winds 10-1~~~5~~ miles~~ an~~ hour~~."
 )
 
-data_strings["ocean_b_3"] = (
+data_strings["radio_b_3"] = (
     "Saturday:\n\n~~~~~~~~Partly sunny.\n"
     "~~~~~~~~High-@igh-@igh-@igh-@igh-@igh-@igh-@igh-@igh-@igh-@igh-@igh-@igh-@igh-@igh-@igh-@igh-@igh-@igh-i"
 )

@@ -8,7 +8,8 @@ from just_playback import Playback
 from animation_scenes import all_scenes, canvas
 from string_defs import data_strings
 import animator as am
-
+from music_info import BEAT_PER_SEC, SEC_PER_TICK
+import pyautogui
 
 last_frames = []
 
@@ -24,9 +25,7 @@ counter = am.Scene(
         ),
     )
 )
-
-
-ocean_events = (
+ocean_events_bk = (
     am.Event(60, lambda c: c.set_generator_data(
         "ocean_b", 1, "text", data_strings["ocean_b_0"]
     )),
@@ -107,6 +106,41 @@ ocean_events = (
     ))
 )
 
+radio_events = (
+    am.Event(60, lambda c: c.set_generator_data(
+        "radio_b", 0, "text", data_strings["radio_b_0"]
+    )),
+    am.Event(310, lambda c: c.set_generator_data(
+        "radio_b", 0,
+        "text", "[##CLEAR|60;6"
+    )),
+   
+    am.Event(320, lambda c: c.set_generator_data(
+        "radio_b", 0, "text", data_strings["radio_b_1"], "offset", 0
+    )),
+   
+    am.Event(646, lambda c: c.set_generator_data(
+        "radio_b", 0,
+        "text", "[##CLEAR|60;8"
+    )),
+    am.Event(652, lambda c: c.set_generator_data(
+        "radio_b", 0,
+        "text", data_strings["radio_b_2"], "offset", 0
+    )),
+    
+    am.Event(999, lambda c: c.set_generator_data(
+        "radio_b", 0,
+        "text", "[##CLEAR|60;10"
+    )),
+    
+    am.Event(1000, lambda c: c.set_generator_data(
+        "radio_b", 0,
+        "text", data_strings["radio_b_3"],
+        "offset", 0
+    )),
+    
+)
+
 
 ocean2_events = (
     am.Event(3896, lambda c: c.set_generator_data(
@@ -147,14 +181,13 @@ ocean2_events = (
 
 controller = am.SceneManager((*all_scenes, counter), (
     am.Event(0, am.Event.swap_scene("wipe")),
-    am.Event(10, am.Event.layer_scene("test_scene")),
 
-    am.Event(1, am.Event.layer_scene("debug_counter")),
+    # am.Event(1, am.Event.layer_scene("debug_counter")),
     
     am.Event(58, am.Event.swap_scene("clear")),
-    am.Event(60, am.Event.swap_scene("ocean_b")),
+    am.Event(60, am.Event.swap_scene("radio_b")),
     # am.Event(60, am.Event.layer_scene("typewrite")),
-    *ocean_events,
+    *radio_events,
     am.Event(1079, am.Event.swap_scene("clear")),
     am.Event(1080, am.Event.swap_scene("beats")),
     am.Event(1080, am.Event.layer_scene("title")),
@@ -264,11 +297,9 @@ controller = am.SceneManager((*all_scenes, counter), (
 
 
 # canvas.render_blank()
-BPM = 179
-BEAT_PER_SEC=BPM/60
-SEC_PER_BEAT=60/BPM
-SEC_PER_TICK=SEC_PER_BEAT/8
 
+
+playback=Playback()
 
 def main():
     tick = 0
@@ -277,9 +308,8 @@ def main():
     enable_ansi()
     filename = "media/credits.wav"
 
-    # playback = Playback()
-    # playback.load_file(filename)
-
+    global playback
+    playback.load_file(filename)
 
     if os.name == "nt":
         os.system("cls")
@@ -289,8 +319,8 @@ def main():
         print("\033[2J")
 
 
-    # playback.play()
-    # playback.seek(skip_by)
+    playback.play()
+    playback.seek(2.8)
 
     time_start = time.time()
 

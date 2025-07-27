@@ -107,5 +107,5 @@ def unpack_content_to_text(content):
     return "".join(line for line in content)
 
 
-def begin_ocean():
+def begin_radio():
     return init_populate_ocean()

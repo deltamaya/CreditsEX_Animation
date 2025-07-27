@@ -5,11 +5,12 @@
 import animator as am
 from animation_functions import *
 from animation_classes import known_weathers
-from ocean import begin_ocean, update_ocean_slices
+from radio import begin_radio, update_radio_slices, radio_info
+
 from CLIRender.classes import Canvas
 
 canvas = Canvas(Vector2(40, 24), 1, ())
-
+from string_defs import data_strings
 wipe = am.Scene(
     "wipe",
     (
@@ -17,7 +18,7 @@ wipe = am.Scene(
             0, am.Generator.always(),
             am.Generator.no_create(),
             lambda g, b: noise(
-                canvas, 0, int(b ** 1.4), ("##", "@@", "  "),
+                canvas, 0, int(b ** 1.4), ("##", "@@", "%%","░░" ,"  "),
                 (
                     *((Style.BRIGHT + Fore.WHITE,) * b),
                     *((Style.NORMAL + Fore.WHITE,) * (70 - b)),
@@ -64,24 +65,55 @@ clear_scene = am.Scene(
     )
 )
 
+radio =am.Scene(
+    "radio_b",
+    (
+        am.Generator(
+            0, am.Generator.always(),
+            lambda g: g.set_data("text", "", "offset", 0),
+            lambda g, b: type_text(canvas, g, 0, 1, 1, Style.BRIGHT + Fore.WHITE),
+            am.Generator.no_request()
+        ),
+        am.Generator(
+            0, am.Generator.every_n_beats(2),
+            lambda g: g.set_data("radio", begin_radio(), "radio_glitch", 1, "radio_col", Style.BRIGHT + Fore.BLUE),
+            lambda g, b: canvas.set_string(
+                0, Vector2(0, 12), update_radio_slices(g.get_data("radio"),
+                                                       g.get_data("radio_glitch")), g.get_data("radio_col")
+            ),
+            am.Generator.no_request()
+        ),
+        am.Generator(
+            0, am.Generator.always(),
+            am.Generator.no_create(),
+            lambda g, b: 
+                radio_info(canvas)
+            ,
+            am.Generator.no_request()
+        ),
+    )
+)
+
+
 
 ocean = am.Scene(
     "ocean_b",
     (
-        am.Generator(
-            0, am.Generator.every_n_beats(2),
-            lambda g: g.set_data("ocean", begin_ocean(), "ocean_glitch", 1, "ocean_col", Style.BRIGHT + Fore.BLUE),
-            lambda g, b: canvas.set_string(
-                0, Vector2(0, 14), update_ocean_slices(g.get_data("ocean"),
-                                                       g.get_data("ocean_glitch")), g.get_data("ocean_col")
-            ),
-            am.Generator.no_request()
-        ),
+
 
         am.Generator(
             0, am.Generator.always(),
             lambda g: g.set_data("text", "", "offset", 0),
             lambda g, b: type_text(canvas, g, 0, 1, 1, Style.BRIGHT + Fore.WHITE),
+            am.Generator.no_request()
+        ),
+        am.Generator(
+            0, am.Generator.every_n_beats(2),
+            lambda g: g.set_data("ocean", begin_radio(), "ocean_glitch", 1, "ocean_col", Style.BRIGHT + Fore.BLUE),
+            lambda g, b: canvas.set_string(
+                0, Vector2(0, 14), update_radio_slices(g.get_data("ocean"),
+                                                       g.get_data("ocean_glitch")), g.get_data("ocean_col")
+            ),
             am.Generator.no_request()
         ),
     )
@@ -93,9 +125,9 @@ ocean2 = am.Scene(
     (
         am.Generator(
             0, am.Generator.every_n_beats(2),
-            lambda g: g.set_data("ocean", begin_ocean(), "ocean_glitch", 16, "ocean_col", Style.BRIGHT + Fore.BLACK),
+            lambda g: g.set_data("ocean", begin_radio(), "ocean_glitch", 16, "ocean_col", Style.BRIGHT + Fore.BLACK),
             lambda g, b: canvas.set_string(
-                0, Vector2(0, 14), update_ocean_slices(g.get_data("ocean"),
+                0, Vector2(0, 14), update_radio_slices(g.get_data("ocean"),
                                                        g.get_data("ocean_glitch")), g.get_data("ocean_col")
             ),
             am.Generator.no_request()
@@ -137,9 +169,9 @@ ocean3 = am.Scene(
     (
         am.Generator(
             0, am.Generator.always(),
-            lambda g: g.set_data("ocean", begin_ocean(), "ocean_glitch", 100, "ocean_col", Style.NORMAL + Fore.MAGENTA),
+            lambda g: g.set_data("ocean", begin_radio(), "ocean_glitch", 100, "ocean_col", Style.NORMAL + Fore.MAGENTA),
             lambda g, b: canvas.set_string(
-                0, Vector2(0, 14), update_ocean_slices(g.get_data("ocean"),
+                0, Vector2(0, 14), update_radio_slices(g.get_data("ocean"),
                                                        g.get_data("ocean_glitch")), g.get_data("ocean_col")
             ),
             am.Generator.no_request()
@@ -196,7 +228,7 @@ title = am.Scene(
             64, am.Generator.at_beat(64),
             am.Generator.no_create(),
             lambda g, b: canvas.set_string(
-                0, Vector2(1, 1), "animation | plaaosert", Fore.CYAN + Style.BRIGHT
+                0, Vector2(1, 1), "animation | plaaosert & deltamaya", Fore.CYAN + Style.BRIGHT
             ),
             am.Generator.no_request()
         ),
@@ -205,7 +237,7 @@ title = am.Scene(
             128, am.Generator.at_beat(128),
             am.Generator.no_create(),
             lambda g, b: canvas.set_string(
-                0, Vector2(1, 2), "bgm       | Frums - Credits", Fore.CYAN + Style.BRIGHT
+                0, Vector2(1, 2), "bgm       | Frums - CreditsEX", Fore.CYAN + Style.BRIGHT
             ),
             am.Generator.no_request()
         ),
@@ -214,7 +246,7 @@ title = am.Scene(
             192, am.Generator.at_beat(192),
             am.Generator.no_create(),
             lambda g, b: canvas.set_string(
-                0, Vector2(1, 4), "running pure Python 3.6", Fore.CYAN + Style.NORMAL
+                0, Vector2(1, 4), "running pure Python 3.13", Fore.CYAN + Style.NORMAL
             ),
             am.Generator.no_request()
         ),
@@ -313,13 +345,13 @@ beats = am.Scene(
         am.Generator(
             0, am.Generator.combine_conditions(am.Generator.every_on_off(48, 16), am.Generator.every_n_beats(4)),
             lambda g: g.set_data("beat_toggle", True),
-            lambda g, b: beat_toggle(canvas, g, 0, 18, 22, 11, 15, "@@", Style.BRIGHT + Fore.YELLOW),
+            lambda g, b: beat_toggle_disc(canvas, g, 0, '#','@', "+", Style.BRIGHT + Fore.BLACK),
             am.Generator.no_request()
         ),
         am.Generator(
             0, am.Generator.combine_conditions(am.Generator.every_off_on(48, 16), am.Generator.every_n_beats(2)),
             lambda g: g.set_data("beat_toggle", True),
-            lambda g, b: beat_toggle(canvas, g, 0, 18, 22, 11, 15, "##", Style.BRIGHT + Fore.GREEN),
+            lambda g, b: beat_toggle_disc(canvas, g, 0, "@",'#', "+", Style.BRIGHT + Fore.WHITE),
             am.Generator.no_request()
         ),
     )
@@ -332,13 +364,13 @@ beats_lr = am.Scene(
         am.Generator(
             0, am.Generator.combine_conditions(am.Generator.every_on_off(48, 16), am.Generator.every_n_beats(4)),
             lambda g: g.set_data("beat_toggle", True),
-            lambda g, b: beat_toggle(canvas, g, 0, 18, 20, 11, 15, "@@", Style.BRIGHT + Fore.YELLOW),
+            lambda g, b: beat_toggle_disc(canvas, g, 0, '#','@', "+", Style.BRIGHT + Fore.BLACK),
             am.Generator.no_request()
         ),
         am.Generator(
             0, am.Generator.combine_conditions(am.Generator.every_off_on(48, 16), am.Generator.every_n_beats(2)),
             lambda g: g.set_data("beat_toggle", True),
-            lambda g, b: beat_toggle(canvas, g, 0, 20, 22, 11, 15, "##", Style.BRIGHT + Fore.GREEN),
+            lambda g, b: beat_toggle_disc(canvas, g, 0, "@",'#', "+", Style.BRIGHT + Fore.WHITE),
             am.Generator.no_request()
         ),
     )
@@ -352,13 +384,13 @@ beats_side = am.Scene(
         am.Generator(
             0, am.Generator.combine_conditions(am.Generator.every_on_off(48, 16), am.Generator.every_n_beats(4)),
             lambda g: g.set_data("beat_toggle", True),
-            lambda g, b: beat_toggle(canvas, g, 0, 18, 20, 11, 15, "@@", Style.BRIGHT + Fore.YELLOW),
+            lambda g, b: beat_toggle_disc(canvas, g, 0, '#','@', "+", Style.BRIGHT + Fore.BLACK),
             am.Generator.no_request()
         ),
         am.Generator(
             0, am.Generator.combine_conditions(am.Generator.every_off_on(48, 16), am.Generator.every_n_beats(2)),
             lambda g: g.set_data("beat_toggle", True),
-            lambda g, b: beat_toggle(canvas, g, 0, 20, 22, 11, 15, "##", Style.BRIGHT + Fore.GREEN),
+            lambda g, b: beat_toggle_disc(canvas, g, 0, "@",'#', "+", Style.BRIGHT + Fore.WHITE),
             am.Generator.no_request()
         ),
     )
@@ -728,13 +760,13 @@ funding_double = am.Scene(
         ),
     )
 )
-
 access_points = am.Scene(
     "accesspoints",
     (
         am.Generator(
             0, am.Generator.combine_conditions(am.Generator.before_n(20), am.Generator.every_n_beats(2)),
             am.Generator.no_create(),
+            # what the fuck is this shit
             lambda g, b: set_multiline_string(
                 canvas, 0, 1, 1,
                 "\n\n".join(
@@ -743,7 +775,7 @@ access_points = am.Scene(
                             ("PBS #{:02}".format((yblock * 6) + x + 1) if yline == 1 else ("  ###  ", "", "Unknown")[yline]) if random.randint(0, max(1, 32 - int(b ** 1.2))) < 4 else "       "
                             for x in range(6)
                         ) for yline in range(3)
-                    ) for yblock in range(4)
+                    ) for yblock in range(3)
                 ),
                 Fore.BLACK + Style.BRIGHT),
             am.Generator.no_request()
@@ -760,7 +792,7 @@ access_points = am.Scene(
                             ("PBS #{:02}".format((yblock * 6) + x + 1) if yline == 1 else ("  ###  ", "", "Unknown")[yline])
                             for x in range(6)
                         ) for yline in range(3)
-                    ) for yblock in range(4)
+                    ) for yblock in range(3)
                 ),
                 Fore.RED + Style.NORMAL),
             am.Generator.no_request()
@@ -772,7 +804,7 @@ access_points = am.Scene(
             lambda g, b: set_multiline_string(canvas, 0, 1, 17,
                                               "No access points are broadcasting.\n"
                                               "Manual search in progress.\n"
-                                              "Last search 27.02.2019 (532 days ago)",
+                                              "Last search 2022/02/03 (1269 days ago)",
                                               Fore.BLACK + Style.BRIGHT),
             am.Generator.no_request()
         ),
@@ -787,7 +819,7 @@ access_points = am.Scene(
         am.Generator(
             968, am.Generator.at_beat(968),
             am.Generator.no_create(),
-            lambda g, b: set_multiline_string(canvas, 0, 6, 9, "  @@@  \nPBS #14\n Active", Fore.GREEN + Style.BRIGHT),
+            lambda g, b: set_multiline_string(canvas, 0, 6, 9, "  @@@  \nPBS #14\n Online", Fore.GREEN + Style.BRIGHT),
             am.Generator.no_request()
         )
     )
@@ -881,7 +913,7 @@ test_scene=am.Scene(
 )
 
 all_scenes = (
-    test_scene,wipe, clear_wipe, clear_scene, ocean, ocean2, ocean3, text, title, beats, beats_lr, funding, date_ticker,
+    radio,test_scene,wipe, clear_wipe, clear_scene, ocean, ocean2, ocean3, text, title, beats, beats_lr, funding, date_ticker,
     weather, redraw_ui, loading, quick_loading, error_screen, funding_double, access_points, funding_single,
     funding_down, poweroff
 )
